@@ -4,10 +4,10 @@ require_once 'Updater_utility.php';
 require_once 'Updater.php';
 
 $updater = new Updater(array(
-    'repository' => 'vlucas/valitron', // Repository yang akan dipantau
+    'repository' => 'OpenSID/OpenSID', // Repository yang akan dipantau
     'branch' => 'master',              // Branch mana yang ingin dipantau?
     'prerelease' => FALSE,             // Gunakan pre-rilis?
-    'saveto' => 'test/',               // Tempat menyimpan file update
+    'saveto' => './',                  // Tempat menyimpan file update
     'skipped' => '.skipped',           // Nama - nama file yang akan di skip saat update (taruh perbaris di file ini)
     'version' => 'version.json',       // Nama file tempat menyimpan versi app terinstall
     'zipball' => 'zipball.zip',        // Nama file zip sementara
@@ -19,7 +19,7 @@ $updater = new Updater(array(
 
 
 if ($updater->isAbleToUpdate()) {
-    if (isset($_GET['update'])) {
+    if (isset($_GET['mutakhirkan'])) {
             $updater->doUpdate();
         echo '<h3>Aplikasi Berhasil Dimutakhirkan!</h3>';
     }
@@ -29,7 +29,7 @@ if ($updater->isAbleToUpdate()) {
         echo '<h3>Catatan Perubahan:</h3>';
         echo nl2br($newest['body']);
         echo '<br>---------------------------------------<br>';
-        echo '<a href="?update">PERBARUI</a>'; //only update if they klick this link
+        echo '<a href="?mutakhirkan">MUTAKHIRKAN</a>';
     }
 }
 else {

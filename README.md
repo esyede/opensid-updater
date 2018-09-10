@@ -34,7 +34,7 @@ require_once 'Updater_utility.php';
 require_once 'Updater.php';
 
 $updater = new Updater(array(
-    'repository' => 'vlucas/valitron', // Repository yang akan dipantau
+    'repository' => 'OpenSID/OpenSID', // Repository yang akan dipantau
     'branch' => 'master',              // Branch mana yang ingin dipantau?
     'prerelease' => FALSE,             // Gunakan pre-rilis?
     'saveto' => './',                  // Tempat menyimpan file update
