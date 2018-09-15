@@ -27,7 +27,7 @@ class Updater {
             // Pesan - pesan error internal pustaka
             E_NO_REPO='Repositori tujuan belum diatur',
             E_NO_CONFIG='Pustaka belum dikonfigurasi',
-            NO_HTTPS_WRAPPER='Tidak ditemukan wrapper https',
+            E_NO_HTTPS_WRAPPER='Tidak ditemukan wrapper https',
             E_API_EXCEPTION='Kesalahan API: %s',
             E_DOWNLOAD_FAILED='Gagal mengunduh file arsip dari repositori',
             E_NO_INTERNET='Tidak ada koneksi internet',
@@ -101,7 +101,7 @@ class Updater {
         else {
             if (!in_array('https',stream_get_wrappers())) {
                 if ($this->options['exceptions'])
-                    throw new \Exception(self::NO_HTTPS_WRAPPER);
+                    throw new \Exception(self::E_NO_HTTPS_WRAPPER);
                 else return array();
             }
             $content=@file_get_contents($path,FALSE,$this->stream);

@@ -3,7 +3,7 @@ Update script OpenSID langsung dari GitHub repo
 
 
 ## Apa ini?
-Script ini dimaksudkan untuk menambahkan fitur update (upgrade) script OpenSID langsung dari github release milik repositori resminya.
+Script ini dimaksudkan untuk menambahkan fitur update (upgrade?) script OpenSID langsung dari github release milik repositori resminya.
 
 
 ## Status
@@ -12,21 +12,22 @@ Script ini masih dalam pengembangan. Jangan dulu dipakai di server produksi!
 
 ## Cara kerja
 Script ini mengambil rilis terbaru dari repo github dengan catatan:
-  1. Jika saat script ini dijaalankan dan belum terdapat file cache, dia akan langsung mengunduh veri terbaru dan mengekstraknya ke webserver anda, juga akan dibuat file cache secara otomatis.
-  2. Jika file cache sudah ada, dia akan membandingkn Tag versi rilis pada cache dengan data dari repo github sehingga user dapat memilih untuk melanjutkan update atau mebatalknnya. Jika update dilanjutkan, file lama di disk akan ditimpa dengan file baru hasil unduhan.
-  3. Jika file `updater.skip` disertakann, maka daftar nama-nama file yang sesuai dengan yang ada didalam file `updater.skip` ini akan diabaikan (tidak ditimpa), tujuannya untuk mengamankan file-file konfigurasi milik user.
+  1. Jika saat script ini dijalankan dan belum terdapat file cache, dia akan langsung mengunduh versi terbaru dan mengekstraknya ke webserver anda, juga akan dibuat file cache secara otomatis.
+  2. Jika file cache sudah ada, dia akan membandingkan Tag versi rilis pada cache dengan data dari repo github sehingga anda dapat memilih untuk melanjutkan update atau membatalkannya. Jika update dilanjutkan, file lama di disk akan ditimpa dengan file baru hasil unduhan.
+  3. Jika file `updater.skip` disertakan, maka daftar path file yang sesuai dengan yang ada didalam file `updater.skip` ini akan diabaikan (tidak ditimpa), tujuannya untuk mengamankan file-file konfigurasi.
 
 
 ## Kekurangan script ini
   1. Belum ada progress bar untuk indikasi
   2. Lama waktu update tergantung koneksi internet serta prosesor di server
-  3. Mungkin akan beresiko terjadi file corrupt jika koneksi lambat (dan memang belum ada fungsi checksum di script ini)
+  3. Ada indikasi resiko file corrupt jika koneksi lambat saat update dijalankan 
+  (bisa terjadi untuk OpenSID yang diupdate di komputer lokal, bisa timeout karena koneksi internet yang lambat tadi dan memang belum ada fungsi checksum di pustaka ini)
 
 
 ## Cara penggunaan
 Sudah disertakan file `test.php` yang dapat anda jalankan untuk ikut mencoba.
 
-Isi file `test.php` tersebut kurang lebih seperti ini:
+Isi file `test.php` tersebut kurang lebih seperti berikut:
 ```php
 <?php
 require_once 'Updater_cache.php';
