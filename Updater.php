@@ -3,8 +3,11 @@
 class Updater {
 
     protected
+        // Stream context
         $stream=NULL,
+        // Array rilis
         $releases=array(),
+        // Opsi konfigurasi default
         $options=array(
             'repository'=>'',
             'set_time_limit'=>3600, // 1 jam
@@ -12,13 +15,23 @@ class Updater {
             'expiry'=>43200, // 12 jam
             'version'=>'version.json',
             'zipball'=>'zipball.zip',
-            'skipped'=>'.skipped',
+            'skipped'=>'updater.skip',
             'branch'=>'master',
             'cachedir'=>'cache/',
             'saveto'=>'test/',
             'prerelease'=>FALSE,
             'exceptions'=>FALSE,
         );
+
+        const
+            // Pesan - pesan error internal pustaka
+            E_NO_REPO='Repositori tujuan belum diatur',
+            E_NO_CONFIG='Pustaka belum dikonfigurasi',
+            NO_HTTPS_WRAPPER='Tidak ditemukan wrapper https',
+            E_API_EXCEPTION='Kesalahan API: %s',
+            E_DOWNLOAD_FAILED='Gagal mengunduh file arsip dari repositori',
+            E_NO_INTERNET='Tidak ada koneksi internet',
+            E_NO_SUITABLE_RELEASE='Tidak ada rilis yang cocok dengan konfigurasi yang diberikan';
 
     /**
      * Konstruktor
@@ -27,15 +40,15 @@ class Updater {
     public function __construct($configs) {
         if (is_array($configs)) {
             if (!isset($configs['repository'])||empty($configs['repository']))
-                throw new \Exception('No Name in Option Set');
+                throw new \Exception(self::E_NO_REPO);
             $this->options=$configs+$this->options;
         }
         elseif (is_string($configs)) {
             if (empty($configs))
-                throw new \Exception('No Name Set');
+                throw new \Exception(self::E_NO_REPO);
             $this->options['repository']=$configs;
         }
-        else throw new \Exception('No Option Set');
+        else throw new \Exception(self::E_NO_CONFIG);
 
         $this->options['saveto']=rtrim($this->options['saveto'],'/');
         if ($this->options['saveto']!=='') {
@@ -88,26 +101,22 @@ class Updater {
         else {
             if (!in_array('https',stream_get_wrappers())) {
                 if ($this->options['exceptions'])
-                    throw new \Exception("No HTTPS Wrapper Exception");
+                    throw new \Exception(self::NO_HTTPS_WRAPPER);
                 else return array();
             }
             $content=@file_get_contents($path,FALSE,$this->stream);
             if ($content===FALSE) {
                 if ($this->options['exceptions'])
-                    throw new \Exception("No Internet Exception");
+                    throw new \Exception(self::E_NO_INTERNET);
                 else return array();
             }
             $json=json_decode($content,TRUE);
             if (isset($json['message'])) {
                 if ($this->options['exceptions'])
-                    throw new \Exception("API Exception[".$json['message']."]");
+                    throw new \Exception(sprintf(self::E_API_EXCEPTION,$json['message']));
                 else $json=array();
             }
-
-            if (defined('JSON_PRETTY_PRINT'))
-                $content=json_encode($json,JSON_PRETTY_PRINT);
-            else $content=json_encode($json);
-
+            $content=json_encode($json,defined('JSON_PRETTY_PRINT')?JSON_PRETTY_PRINT:0);
             $this->cache->set($content);
             return $json;
         }
@@ -152,7 +161,7 @@ class Updater {
                         Updater_utility::getScriptDir().$this->options['cachedir'].$this->options['version'],
                         json_encode(
                             array('id'=>$newestRelease['id'],'tag_name'=>$newestRelease['tag_name']),
-                            defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0
+                            defined('JSON_PRETTY_PRINT')?JSON_PRETTY_PRINT:0
                         )
                     );
                     return TRUE;
@@ -171,7 +180,7 @@ class Updater {
         $file=@fopen($url,'r',FALSE,$this->stream2);
         if ($file==FALSE) {
             if ($this->options['exceptions'])
-                throw new \Exception("Download faild Exception");
+                throw new \Exception(self::E_DOWNLOAD_FAILED);
             else return FALSE;
         }
 
@@ -262,7 +271,7 @@ class Updater {
         }
         if (!isset($this->newestInfo)) {
             if ($this->options['exceptions'])
-                throw new \Exception("no suitable release found");
+                throw new \Exception(self::E_NO_SUITABLE_RELEASE);
             else return array();
         }
         return $this->newestInfo;

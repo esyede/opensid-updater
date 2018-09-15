@@ -33,5 +33,5 @@ if ($updater->isAbleToUpdate()) {
     }
 }
 else {
-    echo '<h3>Anda Masih Menggunakan Versi Paling Mutakhir!</h3>';
+    echo '<h3>Anda Menggunakan Versi Paling Mutakhir!</h3>';
 }
